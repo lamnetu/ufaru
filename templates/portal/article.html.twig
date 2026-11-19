@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+{% import 'components/macros.html.twig' as ui %}
+{% block title %}{{ item.title }} — УФА.РУ{% endblock %}
+{% block description %}{{ item.excerpt }}{% endblock %}
+
+{% block body %}
+    <nav class="text-xs text-ink-soft mb-4 flex items-center gap-2 flex-wrap">
+        <a href="{{ path('app_home') }}" class="hover:text-green-700">Главная</a><span>/</span>
+        <a href="{{ path('app_news') }}" class="hover:text-green-700">Новости</a><span>/</span>
+        <span class="text-ink font-semibold">{{ item.category }}</span>
+    </nav>
+
+    <article class="grid lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 bg-white rounded-lg3 border border-hairline shadow-card overflow-hidden">
+            <div class="aspect-[16/7] bg-green-50 decorative">
+                <div class="w-full h-full text-green-700">{{ ui.cover(item.variant, 'w-full h-full') }}</div>
+            </div>
+            <div class="p-6 md:p-8">
+                <div class="flex items-center gap-2 flex-wrap mb-3">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold ring-1 {{ ui.tone(item.tone)|trim }}">{{ item.category }}</span>
+                    <span class="text-xs text-ink-soft">{{ ui.date(item.date) }}, {{ item.date|date('H:i') }}</span>
+                    <span class="text-xs text-ink-soft inline-flex items-center gap-1">{{ ui.icon('eye','w-3.5 h-3.5') }}{{ item.views|number_format(0, ',', ' ') }}</span>
+                </div>
+                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight leading-tight text-ink mb-4">{{ item.title }}</h1>
+                <p class="text-base md:text-lg text-ink-muted font-medium leading-relaxed mb-6 pb-6 border-b border-hairline">{{ item.excerpt }}</p>
+                <div class="space-y-4 text-[15px] leading-relaxed text-ink">
+                    {% for p in item.body %}<p>{{ p }}</p>{% endfor %}
+                </div>
+                <div class="mt-8 pt-5 border-t border-hairline flex items-center gap-3 flex-wrap">
+                    <button id="copy-link" type="button" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg2 border border-hairline text-sm font-semibold text-ink hover:border-green-400 hover:text-green-700 transition">
+                        {{ ui.icon('link','w-4 h-4') }}<span id="copy-link-label">Скопировать ссылку</span>
+                    </button>
+                    <a href="{{ path('app_home') }}#appeal" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg2 bg-green-700 text-white text-sm font-semibold hover:bg-green-900 transition">Задать вопрос по теме{{ ui.icon('arrow','w-4 h-4') }}</a>
+                </div>
+            </div>
+        </div>
+
+        <aside class="space-y-4">
+            <div class="bg-white rounded-lg2 border border-hairline shadow-card p-5">
+                <h2 class="text-base font-extrabold text-ink mb-3">Читайте также</h2>
+                <ul class="space-y-3">
+                    {% for r in related %}
+                        <li class="pb-3 border-b border-hairline last:border-0 last:pb-0">
+                            <a href="{{ path('app_article', {slug: r.slug}) }}" class="group block">
+                                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full ring-1 {{ ui.tone(r.tone)|trim }}">{{ r.category }}</span>
+                                <span class="block text-sm font-semibold text-ink group-hover:text-green-700 leading-snug mt-1.5 transition-colors">{{ r.title }}</span>
+                                <span class="block text-xs text-ink-soft mt-1">{{ ui.short(r.date) }}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <a href="{{ path('app_news') }}" class="block text-center px-4 py-2.5 rounded-lg2 bg-white border border-hairline text-sm font-semibold text-ink hover:border-green-400 hover:text-green-700 transition">← Все новости</a>
+        </aside>
+    </article>
+{% endblock %}

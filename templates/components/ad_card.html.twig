@@ -1,0 +1,21 @@
+{% import 'components/macros.html.twig' as ui %}
+
+<article class="ad-card reveal group bg-white rounded-lg2 border border-hairline shadow-card hover:border-green-400 hover:shadow-lift transition-all p-4 flex flex-col"
+         data-category="{{ ad.cat }}"
+         data-district="{{ ad.district }}"
+         data-price="{{ ad.value }}"
+         data-date="{{ ad.date|date('U') }}"
+         data-title="{{ ad.title|lower }}"
+         data-text="{{ ad.text|lower }}"
+         data-extra="{{ ad.extra ? '1' : '0' }}">
+    <div class="flex items-center justify-between mb-2 gap-2">
+        <span class="text-[11px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full ring-1 {{ ui.tone(ad.tone)|trim }}">{{ ad.cat }}</span>
+        <span class="text-xs text-ink-soft shrink-0">{{ ui.short(ad.date) }}</span>
+    </div>
+    <h3 class="font-semibold text-ink group-hover:text-green-700 transition-colors leading-snug mb-1">{{ ad.title }}</h3>
+    <p class="text-sm text-ink-muted line-clamp-2 mb-3">{{ ad.text }}</p>
+    <div class="mt-auto flex items-center justify-between pt-3 border-t border-hairline gap-2">
+        <span class="font-extrabold {{ ad.value > 0 ? 'text-green-700' : 'text-ink' }}">{{ ad.price }}</span>
+        <span class="text-xs text-ink-soft flex items-center gap-1">{{ ui.icon('pin','w-3.5 h-3.5') }}{{ ad.district }}</span>
+    </div>
+</article>

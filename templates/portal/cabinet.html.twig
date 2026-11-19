@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+{% import 'components/macros.html.twig' as ui %}
+{% block title %}Личный кабинет — УФА.РУ{% endblock %}
+
+{% block body %}
+    <nav class="text-xs text-ink-soft mb-4 flex items-center gap-2">
+        <a href="{{ path('app_home') }}" class="hover:text-green-700">Главная</a><span>/</span><span class="text-ink font-semibold">Личный кабинет</span>
+    </nav>
+
+    <div class="reveal rounded-lg3 bg-linear-to-br from-green-700 to-green-900 text-white p-6 md:p-8 shadow-lift mb-6 relative overflow-hidden">
+        <div class="decorative absolute -right-16 -top-16 w-64 h-64 rounded-full bg-sand-300/20 blur-3xl"></div>
+        <div class="relative">
+            <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight mb-2">Мои обращения</h1>
+            <p class="text-white/85 text-sm">Здесь отображаются обращения, поданные с этого устройства. Всего: <span class="font-bold text-sand-300 tabular-nums">{{ appeals|length }}</span></p>
+        </div>
+    </div>
+
+    {% if appeals %}
+        <div class="space-y-4">
+            {% for a in appeals %}
+                <article class="reveal bg-white rounded-lg2 border border-hairline shadow-card p-5 hover:shadow-lift transition">
+                    <div class="flex items-start justify-between gap-4 flex-wrap mb-3">
+                        <div>
+                            <div class="text-[11px] uppercase tracking-wide text-ink-soft">Регистрационный номер</div>
+                            <div class="font-extrabold text-green-800 tabular-nums text-lg">{{ a.number }}</div>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-sand-100 text-sand-700 ring-1 ring-sand-200">
+            <span class="w-1.5 h-1.5 rounded-full bg-sand-500 animate-beacon"></span>{{ a.status }}
+          </span>
+                    </div>
+                    <dl class="grid sm:grid-cols-3 gap-3 text-sm mb-3 pb-3 border-b border-hairline">
+                        <div><dt class="text-xs text-ink-soft">Тема</dt><dd class="font-semibold text-ink">{{ a.topic }}</dd></div>
+                        <div><dt class="text-xs text-ink-soft">Подано</dt><dd class="font-semibold text-ink">{{ ui.date(a.created) }}, {{ a.created|date('H:i') }}</dd></div>
+                        <div><dt class="text-xs text-ink-soft">Ответ на</dt><dd class="font-semibold text-ink break-all">{{ a.email }}</dd></div>
+                    </dl>
+                    <p class="text-sm text-ink-muted leading-relaxed">{{ a.message }}</p>
+                    {% if a.attachment %}
+                        <p class="text-xs text-ink-soft mt-3 inline-flex items-center gap-1.5">{{ ui.icon('doc','w-4 h-4 text-green-600') }}{{ a.attachment }}</p>
+                    {% endif %}
+                    <div class="mt-4 pt-3 border-t border-hairline flex items-center gap-2 text-xs text-ink-soft">
+                        {{ ui.icon('clock','w-4 h-4') }}Срок ответа — до {{ a.created|date_modify('+30 days')|date('d.m.Y') }}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-16 bg-white rounded-lg2 border border-dashed border-hairline">
+            <div class="w-14 h-14 mx-auto rounded-full bg-green-50 text-green-600 flex items-center justify-center mb-3">{{ ui.icon('mail','w-7 h-7') }}</div>
+            <p class="font-bold text-ink mb-1">Обращений пока нет</p>
+            <p class="text-sm text-ink-muted mb-4">Подайте первое обращение через интернет-приёмную</p>
+            <a href="{{ path('app_home') }}#appeal" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg2 bg-green-700 text-white text-sm font-semibold hover:bg-green-900 transition">Написать обращение{{ ui.icon('arrow','w-4 h-4') }}</a>
+        </div>
+    {% endif %}
+{% endblock %}
