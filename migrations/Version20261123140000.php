@@ -39,9 +39,8 @@ final class Version20261123140000 extends AbstractMigration
             PRIMARY KEY(id)
         ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
 
-        $this->addSql(sprintf(
-            'ALTER TABLE news ADD CONSTRAINT FK_news_article FOREIGN KEY (article_id) REFERENCES article (id) ON DELETE SET NULL'
-        ));
+        // Убран лишний sprintf, так как в строке нет плейсхолдеров для форматирования
+        $this->addSql('ALTER TABLE news ADD CONSTRAINT FK_news_article FOREIGN KEY (article_id) REFERENCES article (id) ON DELETE SET NULL');
     }
 
     public function down(Schema $schema): void

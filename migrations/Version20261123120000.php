@@ -20,14 +20,14 @@ final class Version20261123120000 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('CREATE TABLE article (
+        $this->addSql("CREATE TABLE article (
             id BIGINT AUTO_INCREMENT NOT NULL,
             slug VARCHAR(120) NOT NULL,
             title VARCHAR(255) NOT NULL,
             excerpt LONGTEXT NOT NULL,
             body JSON NOT NULL,
             category VARCHAR(60) NOT NULL,
-            tone VARCHAR(20) DEFAULT ''green'' NOT NULL,
+            tone VARCHAR(20) DEFAULT 'green' NOT NULL,
             variant SMALLINT DEFAULT 1 NOT NULL,
             published_at DATETIME NOT NULL,
             views INT DEFAULT 0 NOT NULL,
@@ -38,7 +38,7 @@ final class Version20261123120000 extends AbstractMigration
             INDEX idx_article_published_at (published_at),
             INDEX idx_article_category (category),
             PRIMARY KEY(id)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB");
 
         $this->addSql('CREATE TABLE tag (
             id BIGINT AUTO_INCREMENT NOT NULL,
