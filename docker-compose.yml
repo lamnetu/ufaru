@@ -1,28 +1,28 @@
 services:
     fpm: &fpm-container
-    build:
-        context: ./docker/local
-        dockerfile: Dockerfile_fpm
-    container_name: ${PROJECT_NAME}_fpm
-    networks:
-        - default
-    volumes:
-        - &app-src ./:/app
-        - ./docker/local/config/fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
-        - ./docker/local/config/fpm/php.ini:/usr/local/etc/php/php.ini
-        - ./docker/local/config/fpm/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-    restart: unless-stopped
-    extra_hosts:
-        - "host.docker.internal:host-gateway"
-    environment:
-        PHP_IDE_CONFIG: serverName=localhost
-        REMOTE_HOST: host.docker.internal
-        DB_DATABASE: &db-name ${DB_NAME}
-        DB_USERNAME: &db-username ${DB_USER}
-        DB_PASSWORD: &db-password ${DB_PASSWORD}
-    depends_on:
-        - database
-        - redis
+        build:
+            context: ./docker/local
+            dockerfile: Dockerfile_fpm
+        container_name: ${PROJECT_NAME}_fpm
+        networks:
+            - default
+        volumes:
+            - &app-src ./:/app
+            - ./docker/local/config/fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
+            - ./docker/local/config/fpm/php.ini:/usr/local/etc/php/php.ini
+            - ./docker/local/config/fpm/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+        restart: unless-stopped
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        environment:
+            PHP_IDE_CONFIG: serverName=localhost
+            REMOTE_HOST: host.docker.internal
+            DB_DATABASE: &db-name ${DB_NAME}
+            DB_USERNAME: &db-username ${DB_USER}
+            DB_PASSWORD: &db-password ${DB_PASSWORD}
+        depends_on:
+            - database
+            - redis
 
     nginx:
         build:
@@ -43,7 +43,6 @@ services:
         depends_on:
             - fpm
 
-    # Python AI
     ai-service:
         container_name: ${PROJECT_NAME}_ai
         build:
@@ -51,22 +50,20 @@ services:
         environment:
             - GIGACHAT_CREDENTIALS=${GIGACHAT_CREDENTIALS}
         ports:
-            - "8000:8000" # Опционально, для дебага
+            - "8000:8000"
         restart: unless-stopped
 
-    # Go Parser
     go-parser:
         container_name: ${PROJECT_NAME}_parser
         build:
             context: docker/go-parser
         environment:
             - AI_SERVICE_URL=http://ai-service:8000
-            - PHP_API_URL=http://web/api
+            - PHP_API_URL=http://nginx/api
         depends_on:
             - ai-service
         restart: unless-stopped
 
-    # База данных (MySQL)
     database:
         container_name: ${PROJECT_NAME}_db
         image: mysql:8.4
@@ -80,16 +77,14 @@ services:
         volumes:
             - db_data:/var/lib/mysql
         healthcheck:
-            # Правильный healthcheck с использованием переменной окружения
             test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
             interval: 5s
             retries: 10
         restart: unless-stopped
 
-    # Redis (Кэш Symfony и Очереди для парсера)
     redis:
         image: redis:alpine
-        container_name: ufa_redis
+        container_name: ${PROJECT_NAME}_redis
         ports:
             - "6379:6379"
         volumes:
