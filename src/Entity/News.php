@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Сущность «Новость» — короткая новость городской ленты (таблица: news).
  *
- * В отличие от «Статьи» (Article), новость — это компактный заметочный формат:
+ * Новость — это компактный заметочный формат:
  * заголовок, лид/краткий текст, рубрика и опциональная связь со статьёй,
  * раскрывающей тему подробнее.
  */
@@ -31,7 +31,7 @@ class News
 
     /** Короткий текстовый идентификатор новости: n-2026-0001 */
     #[ORM\Column(type: Types::STRING, length: 40, unique: true)]
-    private string $code = '';
+    private string $slug = '';
 
     /** Заголовок новости */
     #[ORM\Column(type: Types::STRING, length: 255)]
@@ -39,7 +39,7 @@ class News
 
     /** Лид — краткое содержание (одно-два предложения) */
     #[ORM\Column(type: Types::TEXT)]
-    private string $summary = '';
+    private string $description = '';
 
     /** Основной текст новости (необязательный, для развёрнутых заметок) */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -77,28 +77,22 @@ class News
         $this->publishedAt = new \DateTimeImmutable();
     }
 
-    /* ---------------------------------------------------------------- ID */
-
     public function getId(): ?string
     {
         return $this->id;
     }
 
-    /* -------------------------------------------------------------- Code */
-
-    public function getCode(): string
+    public function getSlug(): string
     {
-        return $this->code;
+        return $this->slug;
     }
 
-    public function setCode(string $code): static
+    public function setSlug(string $slug): static
     {
-        $this->code = $code;
+        $this->slug = $slug;
 
         return $this;
     }
-
-    /* ------------------------------------------------------------- Title */
 
     public function getTitle(): string
     {
@@ -112,21 +106,17 @@ class News
         return $this;
     }
 
-    /* ----------------------------------------------------------- Summary */
-
-    public function getSummary(): string
+    public function getDescription(): string
     {
-        return $this->summary;
+        return $this->description;
     }
 
-    public function setSummary(string $summary): static
+    public function setDescription(string $description): static
     {
-        $this->summary = $summary;
+        $this->description = $description;
 
         return $this;
     }
-
-    /* ------------------------------------------------------------ Content */
 
     public function getContent(): ?string
     {
@@ -140,8 +130,6 @@ class News
         return $this;
     }
 
-    /* ---------------------------------------------------------- Category */
-
     public function getCategory(): string
     {
         return $this->category;
@@ -153,8 +141,6 @@ class News
 
         return $this;
     }
-
-    /* ------------------------------------------------------------ Status */
 
     public function getStatus(): string
     {
